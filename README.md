@@ -1,2 +1,2 @@
-# ternaku-bangkit-API-gateway
+# ternaku-bangkit-Devops
  Cloud Computing Capstone Project
