@@ -19,6 +19,8 @@ const Article = sequelize.define('Article', {
     type: DataTypes.STRING,
     allowNull: true,
   },
+}, {
+  timestamps: false, // Menonaktifkan kolom createdAt dan updatedAt
 });
 
 module.exports = Article;
