@@ -1,43 +1,27 @@
 const express = require('express');
-const bodyParser = require('body-parser');
-const session = require('express-session');
-const passport = require('passport');
+const app = express();
 const db = require('./config/database');
 const articleRoutes = require('./routes/articleRoutes');
 const medicineRoutes = require('./routes/medicineRoutes');
-const authRoutes = require('./routes/authRoutes');
-require('dotenv').config();
-require('./config/passport');
 
-const app = express();
-const PORT = process.env.PORT || 3000;
-
-// Middleware
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
-
-// Express session
-app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-  })
-);
-
-// Passport middleware
-app.use(passport.initialize());
-app.use(passport.session());
-
-// Routes
-app.use('/articles', articleRoutes);
-app.use('/medicines', medicineRoutes);
-app.use('/auth', authRoutes);
-
-// Database connection
+// Menghubungkan ke database
 db.authenticate()
-  .then(() => console.log('Database connected...'))
-  .catch((err) => console.error('Database connection error:', err));
+  .then(() => {
+    console.log('Connected to the database');
+  })
+  .catch((error) => {
+    console.error('Unable to connect to the database:', error);
+  });
 
-// Start the server
-app.listen(PORT, () => console.log(`Server started on port http://localhost:${PORT}`));
+// Middleware untuk mengizinkan parsing JSON
+app.use(express.json());
+
+// Mengatur rute-rute API
+app.use('/api', articleRoutes);
+app.use('/api', medicineRoutes);
+
+// Menjalankan server
+const port = 3000;
+app.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
+});
