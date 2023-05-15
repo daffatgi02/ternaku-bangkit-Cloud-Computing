@@ -7,13 +7,17 @@ const Medicine = db.define('Medicine', {
     primaryKey: true,
     autoIncrement: true,
   },
-  title: {
+  name: {
     type: DataTypes.STRING,
     allowNull: false,
   },
-  content: {
+  description: {
     type: DataTypes.TEXT,
     allowNull: false,
+  },
+  price: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
   },
   image: {
     type: DataTypes.STRING,

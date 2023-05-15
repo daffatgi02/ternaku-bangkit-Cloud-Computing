@@ -10,6 +10,11 @@ VALUES
   (1, 'Pitazole', 'Obat Anti Cacing Antelmintik Anthelmintic Spektrum Luas Parasit Ternak Sapi Kerbau', 15000), 
   (2, 'Albenza', 'Obat Cacing sapi 2500mg', 40000),
   (3, 'Anthemintic', 'Obat Cacing Kusus Kambing Dan Domba Meningkatkan Nafsu Makan FEFARM', 20000);
+ALTER TABLE medicines
+ADD COLUMN image VARCHAR(255);
+UPDATE medicines
+SET image = 'path_to_image_file'
+WHERE id = 1;
 
 CREATE TABLE Articles (
   id INT AUTO_INCREMENT PRIMARY KEY,
