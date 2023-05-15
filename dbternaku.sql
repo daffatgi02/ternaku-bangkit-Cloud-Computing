@@ -7,9 +7,9 @@ CREATE TABLE medicines (
 
 INSERT INTO medicines (id, name, description, price)
 VALUES
-  (1, 'Paracetamol', 'Obat penurun demam dan pereda nyeri', 5000), 
-  (2, 'Amoxicillin', 'Antibiotik untuk infeksi bakteri', 10000),
-  (3, 'Loratadine', 'Obat alergi dan antihistamin', 8000);
+  (1, 'Pitazole', 'Obat Anti Cacing Antelmintik Anthelmintic Spektrum Luas Parasit Ternak Sapi Kerbau', 15000), 
+  (2, 'Albenza', 'Obat Cacing sapi 2500mg', 40000),
+  (3, 'Anthemintic', 'Obat Cacing Kusus Kambing Dan Domba Meningkatkan Nafsu Makan FEFARM', 20000);
 
 CREATE TABLE Articles (
   id INT AUTO_INCREMENT PRIMARY KEY,

@@ -1,15 +1,27 @@
 const express = require('express');
 const app = express();
+const db = require('./config/database');
 const articleRoutes = require('./routes/articleRoutes');
+const medicineRoutes = require('./routes/medicineRoutes');
 
-// Middleware untuk parsing body request sebagai JSON
+// Menghubungkan ke database
+db.authenticate()
+  .then(() => {
+    console.log('Connected to the database');
+  })
+  .catch((error) => {
+    console.error('Unable to connect to the database:', error);
+  });
+
+// Middleware untuk mengizinkan parsing JSON
 app.use(express.json());
 
-// Menghubungkan rute-rute artikel ke aplikasi
+// Mengatur rute-rute API
 app.use('/api', articleRoutes);
+app.use('/api', medicineRoutes);
 
 // Menjalankan server
-const port = process.env.PORT || 3000;
+const port = 3000;
 app.listen(port, () => {
-  console.log(`Server berjalan di http://localhost:${port}`);
+  console.log(`Server is running on port http://localhost:${port}`);
 });
