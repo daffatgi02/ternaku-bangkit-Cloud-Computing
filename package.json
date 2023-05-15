@@ -1,0 +1,19 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "Cloud Computing Capstone Project",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Ternaku-id/ternaku-bangkit-Cloud-Computing.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Ternaku-id/ternaku-bangkit-Cloud-Computing/issues"
+  },
+  "homepage": "https://github.com/Ternaku-id/ternaku-bangkit-Cloud-Computing#readme"
+}
