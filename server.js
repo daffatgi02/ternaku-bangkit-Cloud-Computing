@@ -1,11 +1,15 @@
 const express = require('express');
-const cors = require('cors');
 const app = express();
-const port = 3000;
+const articleRoutes = require('./routes/articleRoutes');
 
-app.use(cors()); // Menggunakan middleware cors
+// Middleware untuk parsing body request sebagai JSON
+app.use(express.json());
 
+// Menghubungkan rute-rute artikel ke aplikasi
+app.use('/api', articleRoutes);
 
+// Menjalankan server
+const port = process.env.PORT || 3000;
 app.listen(port, () => {
-  console.log(`App listening on port http://localhost:${port}`);
+  console.log(`Server berjalan di http://localhost:${port}`);
 });
