@@ -1,5 +1,7 @@
 const bcrypt = require('bcrypt');
 const User = require('../models/User');
+const { Op } = require('sequelize');
+
 
 // Controller untuk signup
 const signup = async (req, res) => {
