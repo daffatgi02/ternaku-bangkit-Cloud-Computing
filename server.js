@@ -3,6 +3,8 @@ const app = express();
 const db = require('./config/database');
 const articleRoutes = require('./routes/articleRoutes');
 const medicineRoutes = require('./routes/medicineRoutes');
+const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
 
 // Menghubungkan ke database
 db.authenticate()
@@ -19,6 +21,8 @@ app.use(express.json());
 // Mengatur rute-rute API
 app.use('/api', articleRoutes);
 app.use('/api', medicineRoutes);
+app.use('/api/auth', authRoutes);
+app.use('/api/users', userRoutes);
 
 // Menjalankan server
 const port = 3000;
