@@ -1,3 +1,4 @@
 Flask==2.0.1
 Flask-MySQLdb==0.2.0
 PyJWT==2.1.0
+secrets==1.0.2

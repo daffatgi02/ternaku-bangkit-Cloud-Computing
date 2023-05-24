@@ -1,11 +1,13 @@
 from flask import Flask, request, jsonify
 from flask_mysqldb import MySQL
+import secrets
 
 app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'python'
+app.config['SECRET_KEY'] = secrets.token_hex(16)  # Generate a random SECRET_KEY
 
 mysql = MySQL(app)
 
@@ -26,7 +28,7 @@ def login():
             login_result = {
                 'email': user['email'],
                 'fullname': user['fullname'],
-                'token': 'your_generated_token',
+                'token': secrets.token_hex(16),
                 'userid': user['id']
             }
             return jsonify({
