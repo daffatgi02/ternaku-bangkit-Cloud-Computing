@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>API Consumption</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+  <body>
+    <h1>User Registration</h1>
+    <form id="register-form">
+      <label>Email:</label>
+      <input type="email" name="email" required /><br />
+      <label>Password:</label>
+      <input type="password" name="password" required /><br />
+      <button type="submit">Register</button>
+    </form>
+
+    <h1>User Login</h1>
+    <form id="login-form">
+      <label>Email:</label>
+      <input type="email" name="email" required /><br />
+      <label>Password:</label>
+      <input type="password" name="password" required /><br />
+      <button type="submit">Login</button>
+    </form>
+
+    <h1>User Details</h1>
+    <button id="get-details">Get User Details</button>
+    <div id="user-details"></div>
+
+    <script>
+      // Register form submit event
+      $("#register-form").submit(function (event) {
+        event.preventDefault();
+        var email = $("input[name=email]").val();
+        var password = $("input[name=password]").val();
+        var requestData = {
+          email: email,
+          password: password,
+        };
+
+        $.ajax({
+          url: "http://127.0.0.1:5000/api/auth/register",
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify(requestData),
+          success: function (response) {
+            // Handle success response
+            alert(response.message);
+          },
+          error: function (error) {
+            // Handle error response
+            alert("An error occurred during registration.");
+          },
+        });
+      });
+
+      // Login form submit event
+      $("#login-form").submit(function (event) {
+        event.preventDefault();
+        var email = $("input[name=email]").val();
+        var password = $("input[name=password]").val();
+        var requestData = {
+          email: email,
+          password: password,
+        };
+
+        $.ajax({
+          url: "http://127.0.0.1:5000/api/auth/login",
+          type: "POST",
+          contentType: "application/json",
+          data: JSON.stringify(requestData),
+          success: function (response) {
+            // Handle success response
+            alert(response.message);
+          },
+          error: function (error) {
+            // Handle error response
+            alert("An error occurred during login.");
+          },
+        });
+      });
+
+      // Get user details button click event
+      $("#get-details").click(function () {
+        var token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyaWQiOjV9.4EtQX7Vf-H9t_qOig5T91h9TMnG_Y_0DhkBXeVzG8-U"; // Set the token here
+
+        $.ajax({
+          url: "/api/auth/getdetail",
+          type: "GET",
+          headers: {
+            Authorization: "Bearer " + token,
+          },
+          success: function (response) {
+            // Handle success response
+            $("#user-details").html(JSON.stringify(response));
+          },
+          error: function (error) {
+            // Handle error response
+            alert("An error occurred while getting user details.");
+          },
+        });
+      });
+    </script>
+  </body>
+</html>
