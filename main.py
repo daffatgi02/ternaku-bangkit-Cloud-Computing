@@ -3,9 +3,9 @@ from flask_mysqldb import MySQL
 
 app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'your_username'
-app.config['MYSQL_PASSWORD'] = 'your_password'
-app.config['MYSQL_DB'] = 'your_database_name'
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = ''
+app.config['MYSQL_DB'] = 'python'
 
 mysql = MySQL(app)
 
@@ -73,29 +73,35 @@ def register():
             'message': 'User Created'
         })
 
-
 @app.route('/api/auth/getdetail', methods=['GET'])
 def get_detail():
     token = request.headers.get('Authorization').split()[1]
 
-    # You can decode the token and validate it here if necessary
+    try:
+        decoded_token = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        user_id = decoded_token['user_id']
 
-    cur = mysql.connection.cursor()
-    cur.execute("SELECT * FROM users WHERE token = %s", (token,))
-    user = cur.fetchone()
-    cur.close()
+        cur = mysql.connection.cursor()
+        cur.execute("SELECT * FROM users WHERE id = %s", (user_id,))
+        user = cur.fetchone()
+        cur.close()
 
-    if user:
-        user_detail = {
-            'email': user['email'],
-            'fullname': user['fullname'],
-            'user_id': user['id']
-        }
-        return jsonify(user_detail)
-    else:
+        if user:
+            user_detail = {
+                'email': user['email'],
+                'fullname': user['fullname'],
+                'user_id': user['id']
+            }
+            return jsonify(user_detail)
+        else:
+            return jsonify({
+                'error': True,
+                'message': 'User not found'
+            })
+    except jwt.DecodeError:
         return jsonify({
             'error': True,
-            'message': 'User not found'
+            'message': 'Invalid token'
         })
 
 
