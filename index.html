@@ -1,105 +1,92 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>API Consumption</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  </head>
-  <body>
-    <h1>User Registration</h1>
+<head>
+    <title>Flask API Consumer</title>
+</head>
+<body>
+    <h2>Register</h2>
     <form id="register-form">
-      <label>Email:</label>
-      <input type="email" name="email" required /><br />
-      <label>Password:</label>
-      <input type="password" name="password" required /><br />
-      <button type="submit">Register</button>
+        <label for="email">Email:</label><br>
+        <input type="email" id="register-email" name="email"><br>
+        <label for="password">Password:</label><br>
+        <input type="password" id="register-password" name="password"><br>
+        <label for="fullname">Full Name:</label><br>
+        <input type="text" id="register-fullname" name="fullname"><br>
+        <input type="submit" value="Submit">
     </form>
 
-    <h1>User Login</h1>
+    <h2>Login</h2>
     <form id="login-form">
-      <label>Email:</label>
-      <input type="email" name="email" required /><br />
-      <label>Password:</label>
-      <input type="password" name="password" required /><br />
-      <button type="submit">Login</button>
+        <label for="email">Email:</label><br>
+        <input type="email" id="login-email" name="email"><br>
+        <label for="password">Password:</label><br>
+        <input type="password" id="login-password" name="password"><br>
+        <input type="submit" value="Submit">
     </form>
 
-    <h1>User Details</h1>
-    <button id="get-details">Get User Details</button>
-    <div id="user-details"></div>
+    <h2>Get User Detail</h2>
+    <form id="get-detail-form">
+        <input type="submit" value="Get Detail">
+    </form>
 
     <script>
-      // Register form submit event
-      $("#register-form").submit(function (event) {
-        event.preventDefault();
-        var email = $("input[name=email]").val();
-        var password = $("input[name=password]").val();
-        var requestData = {
-          email: email,
-          password: password,
-        };
+const registerForm = document.getElementById('register-form');
+const loginForm = document.getElementById('login-form');
+const getDetailForm = document.getElementById('get-detail-form');
 
-        $.ajax({
-          url: "http://127.0.0.1:5000/api/auth/register",
-          type: "POST",
-          contentType: "application/json",
-          data: JSON.stringify(requestData),
-          success: function (response) {
-            // Handle success response
-            alert(response.message);
-          },
-          error: function (error) {
-            // Handle error response
-            alert("An error occurred during registration.");
-          },
-        });
-      });
+let token = null;
 
-      // Login form submit event
-      $("#login-form").submit(function (event) {
-        event.preventDefault();
-        var email = $("input[name=email]").val();
-        var password = $("input[name=password]").val();
-        var requestData = {
-          email: email,
-          password: password,
-        };
+registerForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('register-email').value;
+    const password = document.getElementById('register-password').value;
+    const fullname = document.getElementById('register-fullname').value;
 
-        $.ajax({
-          url: "http://127.0.0.1:5000/api/auth/login",
-          type: "POST",
-          contentType: "application/json",
-          data: JSON.stringify(requestData),
-          success: function (response) {
-            // Handle success response
-            alert(response.message);
-          },
-          error: function (error) {
-            // Handle error response
-            alert("An error occurred during login.");
-          },
-        });
-      });
+    const response = await fetch('http://localhost:5000/api/auth/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password, fullname })
+    });
 
-      // Get user details button click event
-      $("#get-details").click(function () {
-        var token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyaWQiOjV9.4EtQX7Vf-H9t_qOig5T91h9TMnG_Y_0DhkBXeVzG8-U"; // Set the token here
+    const data = await response.json();
+    console.log(data);
+});
 
-        $.ajax({
-          url: "/api/auth/getdetail",
-          type: "GET",
-          headers: {
-            Authorization: "Bearer " + token,
-          },
-          success: function (response) {
-            // Handle success response
-            $("#user-details").html(JSON.stringify(response));
-          },
-          error: function (error) {
-            // Handle error response
-            alert("An error occurred while getting user details.");
-          },
-        });
-      });
+loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const email = document.getElementById('login-email').value;
+    const password = document.getElementById('login-password').value;
+
+    const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+    });
+
+    const data = await response.json();
+    console.log(data);
+
+    if (data.loginResult) {
+        token = data.loginResult.token;
+    }
+});
+
+getDetailForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const response = await fetch('http://localhost:5000/api/auth/getdetail', {
+        method: 'GET',
+        headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + token 
+        },
+    });
+
+    const data = await response.json();
+    console.log(data);
+});
+
+
     </script>
-  </body>
+</body>
 </html>
