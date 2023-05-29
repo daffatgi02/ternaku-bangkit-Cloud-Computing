@@ -6,8 +6,17 @@ import jwt
 from flask_bcrypt import generate_password_hash, check_password_hash
 from datetime import datetime, timedelta
 import time
+from flask import Flask, request, jsonify
+from flask_cors import CORS
+import numpy as np
+from PIL import Image
+import tensorflow as tf
+from google.cloud import storage
+from io import BytesIO
+import uuid
 
 app = Flask(__name__)
+CORS(app)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
@@ -15,8 +24,65 @@ app.config['MYSQL_DB'] = 'python'
 app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 app.config['SECRET_KEY'] = secrets.token_hex(16)
 mysql = MySQL(app)
-CORS(app)
 
+# key json google serviceacc
+service_account_key_path = 'key.json'
+
+model_bucket = 'ternaku-tes2'
+sapi_model_blob = 'model_sapi.tflite'
+kambing_model_blob = 'model_kambing.tflite'
+
+def download_model_from_gcs(model_blob, model_path):
+    storage_client = storage.Client.from_service_account_json(service_account_key_path)
+    bucket = storage_client.bucket(model_bucket)
+    blob = bucket.blob(model_blob)
+    blob.download_to_filename(model_path)
+
+def load_model(model_blob, model_path):
+    try:
+        interpreter = tf.lite.Interpreter(model_path=model_path)
+        interpreter.allocate_tensors()
+        input_details = interpreter.get_input_details()
+        output_details = interpreter.get_output_details()
+    except FileNotFoundError:
+        download_model_from_gcs(model_blob, model_path)
+        interpreter = tf.lite.Interpreter(model_path=model_path)
+        interpreter.allocate_tensors()
+        input_details = interpreter.get_input_details()
+        output_details = interpreter.get_output_details()
+
+    return interpreter, input_details, output_details
+
+def preprocess_image(image, input_shape):
+    image = image.resize((input_shape[1], input_shape[2]))
+    image = np.array(image)
+    image = np.expand_dims(image, axis=0)
+    image = image.astype(np.float32) / 255.0 
+    return image
+
+def predict_image(image, interpreter, input_details, output_details):
+    image = preprocess_image(image, input_details[0]['shape'])
+    interpreter.set_tensor(input_details[0]['index'], image)
+    interpreter.invoke()
+    output = interpreter.get_tensor(output_details[0]['index'])
+    predicted_class = "Mata Terjangkit Penyakit Pinkeye" if output[0][0] < 0.5 else "Selamat Mata Kambing Kamu Sehat :)" 
+    probability = output[0][0]
+
+    return predicted_class, probability
+
+bucket_name = 'ternaku-tes2'
+image_folder = 'image'
+
+def upload_image_to_gcs(image):
+    filename = str(uuid.uuid4()) + '.jpg'
+    storage_client = storage.Client.from_service_account_json(service_account_key_path)
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(f"{image_folder}/{filename}")
+    image_bytes = BytesIO()
+    image.save(image_bytes, format='JPEG')
+    image_bytes.seek(0)
+    blob.upload_from_file(image_bytes, content_type='image/jpeg')
+    return blob.public_url
 
 def validate_token(token):
     if not token:
@@ -197,6 +263,46 @@ def get_article(article_id):
 
     return jsonify({'error': True, 'message': 'Article Not Found'}), 404
 
+# Endpoint /predictsapi
+@app.route('/predictsapi', methods=['POST'])
+def predict_sapi():
+    if 'image' not in request.files:
+        return jsonify({'error': 'No image uploaded'})
+
+    image_file = request.files['image']
+    image = Image.open(image_file)
+
+    interpreter, input_details, output_details = load_model(sapi_model_blob, 'model_sapi.tflite')
+
+    image_url = upload_image_to_gcs(image)
+
+    predicted_class, probability = predict_image(image, interpreter, input_details, output_details)
+
+    result = {'class': predicted_class, 'probability': float(probability), 'image_url': image_url}
+    return jsonify(result)
+
+# Endpoint /predictkambing
+@app.route('/predictkambing', methods=['POST'])
+def predict_kambing():
+    if 'image' not in request.files:
+        return jsonify({'error': 'No image uploaded'})
+
+    image_file = request.files['image']
+    image = Image.open(image_file)
+
+    interpreter, input_details, output_details = load_model(kambing_model_blob, 'model_kambing.tflite')
+
+    image_url = upload_image_to_gcs(image)
+
+    predicted_class, probability = predict_image(image, interpreter, input_details, output_details)
+
+    result = {'class': predicted_class, 'probability': float(probability), 'image_url': image_url}
+    return jsonify(result)
+
+# Endpoint root
+@app.route('/')
+def index():
+    return 'Welcome to the API!'
 
 if __name__ == '__main__':
-    app.run()
+    app.run(host='0.0.0.0', port=5000)
