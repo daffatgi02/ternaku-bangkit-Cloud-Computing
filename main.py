@@ -10,7 +10,6 @@ from datetime import datetime, timedelta
 import time
 import pymysql.cursors
 from flask import Flask, request, jsonify
-from flask_cors import CORS
 import numpy as np
 from PIL import Image
 import tensorflow as tf
@@ -74,7 +73,7 @@ def predict_image(image, interpreter, input_details, output_details):
     interpreter.set_tensor(input_details[0]['index'], image)
     interpreter.invoke()
     output = interpreter.get_tensor(output_details[0]['index'])
-    predicted_class = "Mata Terjangkit Penyakit Pinkeye" if output[0][0] < 0.5 else "Selamat Mata Kambing Kamu Sehat :)" 
+    predicted_class = "Mata Terjangkit Penyakit Pinkeye" if output[0][0] < 0.5 else "Mata Hewan Kamu Sehat! tetap jaga ya!" 
     probability = output[0][0]
 
     return predicted_class, probability
@@ -129,7 +128,7 @@ def register():
     db.commit()
     cur.close()
 
-    return jsonify({'error': False, 'message': 'User Created'})
+    return jsonify({'error': False, 'message': 'Berhasil Register Akun. Silahkan Login'})
 
 @app.route('/api/auth/login', methods=['POST'])
 def login():
@@ -290,7 +289,7 @@ def homepage():
 
     fullname = user['fullname']
 
-    return f'Selamat Datang, {fullname}'
+    return f'Halo! {fullname}'
 
 
 # Endpoint root
