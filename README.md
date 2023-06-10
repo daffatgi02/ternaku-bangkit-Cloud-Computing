@@ -359,4 +359,3 @@ Dokumentasi Backend:
 
 This documentation provides an overview of the backend code and the corresponding API endpoints. It includes information about user authentication, image classification, user profile, product management, and article management. Each endpoint is described with its URL, method, request body (if applicable), request headers, and response structure.
 
-Please note that the code and documentation provided are based on the given code snippet, and additional implementation details or modifications may be required based on specific requirements or system configurations.
