@@ -176,33 +176,31 @@ Dokumentasi Backend:
 - **Response:**
   - If successful:
     - Status Code: 200
-    -
-
- JSON Response:
+    - JSON Response:
       ```json
-      {
-        "error": false,
-        "history": [
-          {
-            "id": 1,
-            "user_id": 1,
-            "animal_category": "Sapi",
-            "prediction_result": "Mata Terjangkit Penyakit Pinkeye",
-            "image_url": "https://storage.googleapis.com/bucket_name/image_folder/image_filename.jpg",
-            "created_at": "2023-06-10 12:34:56"
-          },
-          {
-            "id": 2,
-            "user_id": 1,
-            "animal_category": "Kambing",
-            "prediction_result": "Mata Hewan Kamu Sehat!",
-            "image_url": "https://storage.googleapis.com/bucket_name/image_folder/image_filename.jpg",
-            "created_at": "2023-06-11 09:12:34"
-          }
-        ]
-      }
-      ```
+        {
+          "error": false,
+          "history": [
+            {
+              "id": 1,
+              "user_id": 1,
+              "animal_category": "Sapi",
+              "prediction_result": "Mata Terjangkit Penyakit Pinkeye",
+              "image_url": "https://storage.googleapis.com/bucket_name/image_folder/image_filename.jpg",
+              "created_at": "2023-06-10 12:34:56"
+            },
+            {
+              "id": 2,
+              "user_id": 1,
+              "animal_category": "Kambing",
+              "prediction_result": "Mata Hewan Kamu Sehat!",
+              "image_url": "https://storage.googleapis.com/bucket_name/image_folder/image_filename.jpg",
+              "created_at": "2023-06-11 09:12:34"
+            }
+          ]
+        }
 
+      ```
 #### Get User Profile
 - **Endpoint:** /api/profile
 - **Method:** GET
