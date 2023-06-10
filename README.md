@@ -92,8 +92,8 @@ Dokumentasi Backend:
       {
         "error": false,
         "loginResult": {
-          "email": "user@example.com",
-          "fullname": "John Doe",
+          "email": "daffatgi02@gmail.com",
+          "fullname": "Daffa Fakhuddin Arrozy",
           "token": "<access_token>",
           "userid": 1
         },
@@ -214,8 +214,8 @@ Dokumentasi Backend:
       {
         "error": false,
         "profile": {
-          "email": "user@example.com",
-          "fullname": "John Doe"
+          "email": "daffatgi02@gmail.com",
+          "fullname": "Daffa Fakhuddin Arrozy"
         }
       }
       ```
@@ -346,7 +346,7 @@ Dokumentasi Backend:
 - **Response:**
   - If successful:
     - Status Code: 200
-    - Response Body: `Halo! John Doe`
+    - Response Body: `Halo! Daffa Fakhuddin Arrozy`
 
 #### Root
 - **Endpoint:** /
